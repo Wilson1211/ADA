@@ -106,7 +106,7 @@ long long int** halfsum(long long int begin, long long int end, long long int le
 		long long int **r = new long long int*[1];
 		r[0] = new long long int[2];
 		r[0][0] = a[begin][0];
-		r[0][1] = a[end][0];
+		r[0][1] = a[end][1];
 		return r;
 	}
 
@@ -182,7 +182,7 @@ long long int** halfsum(long long int begin, long long int end, long long int le
 		}
 	}
 	leftsum = le[0][1]*sumla-sumlab-count*le[0][0]*le[0][1]+le[0][0]*sumlb;
-	rightsum = sumrab-le[0][1]*sumra-le[0][0]*sumlb+(l-l/2-count)*le[0][0]*le[0][1];
+	rightsum = sumrab-le[0][1]*sumra-le[0][0]*sumrb+(l-l/2-count)*le[0][0]*le[0][1];
 	sum += (leftsum+rightsum);
 
 
