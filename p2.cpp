@@ -1,10 +1,19 @@
 #include <iostream>
 #include <cstdlib>
+#include <map>
 
 using namespace std;
 
 long long int sum=0;
-void sortx(long long int **b, long long int begin,long long int end,long long int l){
+
+void pp(long long int**c,long long int n){
+	long long int i, j, k;
+	for(i=0;i<n;i++){
+		cout<<c[i][0]<<" "<<c[i][1]<<endl;
+	}
+
+}
+/*void sortx(long long int **b, long long int begin,long long int end,long long int l){
 	long long int tmp;
 	long long int **a1 = new long long int*[l/2];
 	long long int **a2 = new long long int*[l-l/2];
@@ -95,6 +104,22 @@ void sortx(long long int **b, long long int begin,long long int end,long long in
 	delete [] a;
 
 	return ;
+}*/
+
+void sortx(long long int **b, long long int begin,long long int end,long long int l){
+	long long int i, j, k;
+	multimap<long long int,long long int> mymap;
+	multimap<long long int,long long int>::iterator it;
+
+	for(i=0;i<l;i++){
+		mymap.insert(pair<long long int,long long int>(b[i][0],b[i][1]));
+	}
+	i=0;
+	for(it=mymap.begin();it!=mymap.end();it++){
+		b[i][0] = it->first;
+		b[i][1] = it->second;
+		i++;
+	}
 }
 
 long long int** halfsum(long long int begin, long long int end, long long int length, long long int**a){
@@ -102,7 +127,26 @@ long long int** halfsum(long long int begin, long long int end, long long int le
 	long long int half = length/2;
 	long long int l = length;
 	long long int i, j,k;
-	if(length == 1){
+	if(length == 2){
+		long long int **r = new long long int*[2];
+		r[0] = new long long int[2];
+		r[1] = new long long int[2];
+		if(a[begin][1]>a[end][1]){
+			r[0][0] = a[end][0];
+			r[0][1] = a[end][1];
+			r[1][0] = a[begin][0];
+			r[1][1] = a[begin][1];
+			sum += (a[end][0]-a[begin][0])*(a[begin][1]-a[end][1]);
+		}else{
+			r[0][0] = a[begin][0];
+			r[0][1] = a[begin][1];
+			r[1][0] = a[end][0];
+			r[1][1] = a[end][1];
+			sum += (a[end][0]-a[begin][0])*(a[end][1]-a[begin][1]);
+		}
+
+		return r;
+	}else if(length == 1){
 		long long int **r = new long long int*[1];
 		r[0] = new long long int[2];
 		r[0][0] = a[begin][0];
@@ -113,7 +157,7 @@ long long int** halfsum(long long int begin, long long int end, long long int le
 	long long int **le = new long long int*[length/2];
 	long long int **ri = new long long int*[length - length/2];
 
-
+	/*
 	if(length % 2==0){
 		le = halfsum(begin,begin+length/2-1,length/2,a);
 		ri = halfsum(begin+length/2,end,length/2,a);
@@ -122,6 +166,10 @@ long long int** halfsum(long long int begin, long long int end, long long int le
 		le = halfsum(begin,begin+length/2-1,length/2,a);
 		ri = halfsum(begin+length/2,end,length/2+1,a);
 	}
+	*/
+	le = halfsum(begin,begin+length/2-1,length/2,a);
+	ri = halfsum(begin+length/2,end,(length+1)/2,a);
+
 
 	// merge
 	long long int **b1 = new long long int *[length];
@@ -161,7 +209,7 @@ long long int** halfsum(long long int begin, long long int end, long long int le
 	}
 
 	// calculate area sum
-	long long int ptr1=0,ptr2=0,count=0;
+	long long int ptr1=-1,ptr2=-1,count=0;
 	long long int tmpsum=0;
 	long long int leftsum=0,rightsum=0,middlesum=0;
 	long long int sumla=0,sumlb=0,sumlab=0,sumra=0,sumrb=0,sumrab=0;
@@ -192,7 +240,8 @@ long long int** halfsum(long long int begin, long long int end, long long int le
 		middleb = 0;
 		middleab = 0;
 		middlesum = 0;
-		for(j=i+1;j<(l-l/2);j++){
+		ptr2 = ptr1;
+		for(j=ptr1+1;j<(l-l/2);j++){
 			if(ri[j][1]<=le[i][1]){
 				ptr2 = j;
 				middlea += ri[j][0];
@@ -205,11 +254,11 @@ long long int** halfsum(long long int begin, long long int end, long long int le
 		sumrb -= middleb;
 		sumrab -= middleab;
 
-		middlesum = middleab - (ptr2-ptr1)*le[i-1][1]*middlea - (ptr2-ptr1)*le[i-1][0]*middleb + (ptr2-ptr1)*le[i-1][0]*le[i-1][1];
+		middlesum = middleab - le[i-1][1]*middlea - le[i-1][0]*middleb + (ptr2-ptr1)*le[i-1][0]*le[i-1][1];
 		rightsum -= middlesum;
-		leftsum += (le[i][1]-le[i][0])*sumla - ptr2*(le[i][0]*le[i][1]-le[i-1][0]*le[i-1][1]) + (le[i][0]-le[i-1][0])*sumlb;
+		leftsum += (le[i][1]-le[i-1][1])*sumla + (ptr1+1)*(le[i-1][0]*le[i-1][1]-le[i][0]*le[i][1]) + (le[i][0]-le[i-1][0])*sumlb;
 		leftsum += le[i][1]*middlea - middleab - (ptr2-ptr1)*le[i][0]*le[i][1] + le[i][0]*middleb;
-		rightsum += (le[i-1][1]-le[i][1])*sumra+(le[i-1][0]-le[i][0])*sumrb+(ptr2-ptr1)*(le[i][0]*le[i][1] - le[i-1][0]*le[i-1][1]);
+		rightsum += (le[i-1][1]-le[i][1])*sumra+(le[i-1][0]-le[i][0])*sumrb+(l-l/2-ptr2-1)*(le[i][0]*le[i][1] - le[i-1][0]*le[i-1][1]);
 
 		sum += (leftsum+rightsum);
 
@@ -310,6 +359,6 @@ int main(){
 	long long int **b = new long long int*[n];
 	b = halfsum(0,n-1,n,a);
 	
-	cout<<sum;
+	cout<<sum<<endl;
 	return 0;
 }
