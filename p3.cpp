@@ -11,31 +11,34 @@ int main(){
 	Int i, j, k;
 	Int n, m, sum=0;
 	Int arr[100001]={0};
-	Int value[100001]={0};
+	Int value[200001]={0};
 	set<Int> myset;
-	set<Int>::iterator it;
-	cin >> n;
-	Int *a = new Int[n];
-	for(i=0;i<n;i++){
-		cin >> a[i];
-		arr[a[i]]++;
-		myset.insert(a[i]);
-	}
+	set<Int>::iterator it1;
+	set<Int>::iterator it2;
 
-	for(i=0;i<myset.size();i++){
-		it=myset.begin();
-		it+=i;
-		for(;(it+1)!=myset.end();it++){
-			value+=
+	cin >> n;
+
+	for(i=0;i<n;i++){
+		cin >> k;
+		arr[k]++;
+		myset.insert(k);
+	}
+// constract table
+	for(it1=myset.begin();it1!=myset.end();it1++){
+		value[*it1+*it1] += arr[*it1]*(arr[*it1]-1)/2;
+		it2=it1;
+		it2++;
+		for(;it2!=myset.end();it2++){
+			value[*it1+*it2]+=arr[*it1]*arr[*it2];
 		}
 	}
+
 	cin >> m;
-	//Int *b = new Int[m];
 	for(i=0;i<m;i++){
 		cin >> k;
+		if(k>200000){cout<<0<<" ";}
+		else{cout<<value[k]<<" ";}
 	}
 
-	delete [] a;
-	//delete [] b;
 	return 0;
 }
