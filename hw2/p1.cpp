@@ -3,6 +3,8 @@ using namespace std;
 
 typedef long long int Int;
 Int count=0;
+const Int M = 1000001;
+//const Int M1 = 10000001;
 /*
 void fism(Int *a){	// find closest smaller number
 	Int i=1;
@@ -32,9 +34,34 @@ void cnt(Int a){
 	}
 }
 */
+
+Int ff(Int *b,Int n){
+	if(n<1000000){return b[n];}
+
+//	if(b[n]!=0){return b[n];}
+	if(n%2==0){return 1+ff(b,n-1);}
+	else{return 1+ff(b,n/2);}
+}
+
 int main(){
-	Int i, k,j,b=1,tmp;
+	Int i=2, k,j,b=1,tmp;
+
+	Int *a = new Int[M];
+	a[0]=0;
+	a[1]=1;
+	
+	while(i<=M){
+		a[i]=a[i-1]+1;
+		a[i+1]=1+a[i/2];
+		i+=2;
+	}
+
 	cin >> k;
+	while(k--){
+		cin >> j;
+		cout<<(ff(a,j))<<endl;
+	}
+/*
 	for(i=0;i<k;i++){
 		cin >> j;
 		//fism(&j);
@@ -53,6 +80,8 @@ int main(){
 		count=0;
 		b=1;
 	}
+	*/
+
 	return 0 ;
 
 }
