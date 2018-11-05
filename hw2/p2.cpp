@@ -5,9 +5,10 @@ typedef long long int Int;
 
 Int dist(Int**b,Int *ptr,Int *n){
 	Int i, j, k=0;
+	Int x,y,tmp;
 	for(i=0;i<*n;i++){
-		x = a[i][0]-a[*ptr][0];
-		y = a[i][1]-a[*ptr][1];
+		x = b[i][0]-b[*ptr][0];
+		y = b[i][1]-b[*ptr][1];
 		if(x<0){x*=-1;}
 		if(y<0){y*=-1;}
 		if(x>y){tmp=x;x=y;y=tmp;}
